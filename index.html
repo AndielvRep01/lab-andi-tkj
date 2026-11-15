@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab Maya TKJ - Simulasi CLI Ping & Traceroute</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, sans-serif; }
+    body { margin: 0; background: #0f172a; color: #e2e8f0; padding: 20px; }
+    h1 { font-size: 1.4rem; margin: 0 0 5px; color: #38bdf8; }
+    p.sub { margin: 0 0 20px; color: #94a3b8; font-size: 0.9rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 16px; }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 16px; }
+    .card h2 { font-size: 1rem; margin-top: 0; border-bottom: 1px solid #334155; padding-bottom: 8px; color: #f8fafc; }
+    
+    /* Terminal CLI */
+    .terminal { background: #020617; color: #22c55e; font-family: monospace; padding: 12px; border-radius: 8px; height: 260px; overflow-y: auto; font-size: 0.85rem; line-height: 1.5; }
+    .input-row { display: flex; gap: 8px; margin-top: 10px; }
+    input { flex: 1; background: #0f172a; border: 1px solid #475569; color: #fff; padding: 8px 10px; border-radius: 6px; font-family: monospace; }
+    button { background: #0284c7; color: #fff; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+    button:hover { background: #0369a1; }
+    .quick-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .quick-btns button { background: #334155; font-size: 0.75rem; padding: 5px 8px; font-weight: normal; }
+
+    /* Topologi 3 Hop */
+    .topology { display: flex; flex-direction: column; align-items: center; justify-content: space-between; height: 310px; padding: 10px 0; }
+    .node { background: #0f172a; border: 2px solid #475569; padding: 10px 18px; border-radius: 8px; text-align: center; width: 200px; transition: 0.3s; }
+    .node.active { border-color: #22c55e; box-shadow: 0 0 12px rgba(34, 197, 94, 0.5); }
+    .node.error { border-color: #ef4444; box-shadow: 0 0 12px rgba(239, 68, 68, 0.5); }
+    .line { width: 3px; height: 24px; background: #475569; transition: 0.3s; }
+    .line.active { background: #22c55e; }
+    .line.error { background: #ef4444; }
+
+    /* Log ICMP */
+    .log-box { background: #0f172a; border-radius: 8px; padding: 12px; height: 310px; overflow-y: auto; font-size: 0.85rem; }
+    .log-item { padding: 8px; border-left: 3px solid #38bdf8; background: #1e293b; margin-bottom: 8px; border-radius: 4px; }
+    .log-item.timeout { border-left-color: #ef4444; }
+  </style>
+</head>
+<body>
+
+  <h1>Lab Maya TKJ: Simulasi CLI Ping &amp; Packet Traceroute</h1>
+  <p class="sub">Praktikum Diagnostik Konektivitas ICMP &amp; Analisis Hop Router</p>
+
+  <div class="grid">
+    <!-- Panel Kiri: Terminal -->
+    <div class="card">
+      <h2>1. Terminal CLI</h2>
+      <div class="terminal" id="terminal">
+        Microsoft Windows [TKJ-CLI v1.0]<br>
+        Ketik perintah: <b>ping 192.168.10.100</b> atau <b>tracert 192.168.10.100</b><br>
+        Gunakan IP <b>192.168.10.200</b> untuk simulasi Request Timed Out.<br><br>
+      </div>
+      <div class="input-row">
+        <input type="text" id="cmdInput" placeholder="Ketik ping atau tracert..." onkeydown="if(event.key==='Enter') runCmd()" />
+        <button onclick="runCmd()">Kirim</button>
+      </div>
+      <div class="quick-btns">
+        <button onclick="setCmd('ping 192.168.10.100')">ping 192.168.10.100</button>
+        <button onclick="setCmd('tracert 192.168.10.100')">tracert 192.168.10.100</button>
+        <button onclick="setCmd('ping 192.168.10.200')">ping (RTO)</button>
+        <button onclick="clearAll()">cls</button>
+      </div>
+    </div>
+
+    <!-- Panel Tengah: Topologi 3 Hop -->
+    <div class="card">
+      <h2>2. Visualisasi Topologi 3-Hop</h2>
+      <div class="topology">
+        <div class="node" id="n0">💻 <b>PC Client</b><br><small>192.168.10.2</small></div>
+        <div class="line" id="l1"></div>
+        <div class="node" id="n1">🔀 <b>Hop 1: Switch</b><br><small>192.168.10.1</small></div>
+        <div class="line" id="l2"></div>
+        <div class="node" id="n2">🌐 <b>Hop 2: Router</b><br><small>10.10.10.1</small></div>
+        <div class="line" id="l3"></div>
+        <div class="node" id="n3">🖥️ <b>Hop 3: Server</b><br><small>192.168.10.100</small></div>
+      </div>
+    </div>
+
+    <!-- Panel Kanan: Log Respon ICMP -->
+    <div class="card">
+      <h2>3. Log Respon ICMP &amp; Status</h2>
+      <div class="log-box" id="logBox">
+        <div style="color:#64748b;">Menunggu paket dikirim dari terminal...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const term = document.getElementById('terminal');
+    const logBox = document.getElementById('logBox');
+    const input = document.getElementById('cmdInput');
+
+    function setCmd(cmd) { input.value = cmd; runCmd(); }
+
+    function clearAll() {
+      term.innerHTML = '';
+      logBox.innerHTML = '<div style="color:#64748b;">Log dibersihkan.</div>';
+      resetNodes();
+    }
+
+    function resetNodes() {
+      for (let i = 0; i <= 3; i++) document.getElementById('n' + i).className = 'node';
+      for (let i = 1; i <= 3; i++) document.getElementById('l' + i).className = 'line';
+    }
+
+    function printTerm(text) {
+      term.innerHTML += text + '<br>';
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function addLog(title, detail, isError = false) {
+      const div = document.createElement('div');
+      div.className = 'log-item' + (isError ? ' timeout' : '');
+      div.innerHTML = `<b>${title}</b><br><small>${detail}</small>`;
+      logBox.prepend(div);
+    }
+
+    async function animatePath(success) {
+      resetNodes();
+      const steps = ['n0', 'l1', 'n1', 'l2', 'n2', 'l3', 'n3'];
+      for (let i = 0; i < steps.length; i++) {
+        await new Promise(r => setTimeout(r, 250));
+        const el = document.getElementById(steps[i]);
+        if (!success && i >= 5) {
+          el.classList.add('error');
+        } else {
+          el.classList.add('active');
+        }
+      }
+    }
+
+    async function runCmd() {
+      const raw = input.value.trim();
+      if (!raw) return;
+      input.value = '';
+      printTerm(`<span style="color:#38bdf8">C:\\Siswa-TKJ&gt;</span> ${raw}`);
+
+      const parts = raw.toLowerCase().split(/\s+/);
+      const cmd = parts[0];
+      const ip = parts[1];
+
+      if (cmd === 'cls') { clearAll(); return; }
+
+      if ((cmd === 'ping' || cmd === 'tracert') && ip) {
+        const isReachable = (ip === '192.168.10.100');
+        await animatePath(isReachable);
+
+        if (cmd === 'ping') {
+          printTerm(`Pinging ${ip} with 32 bytes of data:`);
+          for (let i = 1; i <= 4; i++) {
+            await new Promise(r => setTimeout(r, 400));
+            if (isReachable) {
+              const rtt = Math.floor(Math.random() * 15) + 4;
+              printTerm(`Reply from ${ip}: bytes=32 time=${rtt}ms TTL=64`);
+              addLog(`ICMP Echo Reply #${i}`, `Tujuan: ${ip} | RTT: ${rtt}ms | TTL: 64 (Sukses)`);
+            } else {
+              printTerm(`Request timed out.`);
+              addLog(`ICMP Timeout #${i}`, `Tujuan: ${ip} tidak merespon (Packet Loss)`, true);
+            }
+          }
+        } else if (cmd === 'tracert') {
+          printTerm(`Tracing route to ${ip} over a maximum of 30 hops:`);
+          const hops = [
+            { num: 1, ip: '192.168.10.1', name: 'Switch-Lokal', ms: '2 ms' },
+            { num: 2, ip: '10.10.10.1', name: 'Router-Gateway', ms: '8 ms' },
+            { num: 3, ip: ip, name: isReachable ? 'Server-Tujuan' : 'Request timed out.', ms: isReachable ? '14 ms' : '*' }
+          ];
+          for (const h of hops) {
+            await new Promise(r => setTimeout(r, 500));
+            if (!isReachable && h.num === 3) {
+              printTerm(`  ${h.num}    *        *        *     Request timed out.`);
+              addLog(`Hop ${h.num} Gagal`, `Paket terhenti setelah Router Gateway`, true);
+            } else {
+              printTerm(`  ${h.num}    ${h.ms}     ${h.ms}     ${h.ms}   ${h.name} [${h.ip}]`);
+              addLog(`Hop ${h.num} Tercapai`, `${h.name} (${h.ip}) - Waktu: ${h.ms}`);
+            }
+          }
+        }
+      } else {
+        printTerm(`Perintah tidak dikenali. Gunakan: ping [ip] atau tracert [ip]`);
+      }
+    }
+  </script>
+</body>
+</html>
