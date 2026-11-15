@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Andiel | Portofolio & Lab Maya TKJ</title>
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card: #111827;
+      --card-inner: #0f172a;
+      --border: #1f2937;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --green: #22c55e;
+      --red: #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); line-height: 1.6; }
+    a { color: var(--accent); text-decoration: none; }
+
+    /* Navbar */
+    nav {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(11, 17, 32, 0.9); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      display: flex; justify-content: space-between; align-items: center;
+      max-width: 1060px; margin: 0 auto; padding: 18px 20px;
+    }
+    .logo { font-size: 1.3rem; font-weight: 800; letter-spacing: 0.5px; color: #fff; }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; align-items: center; gap: 20px; }
+    .nav-links a { color: var(--muted); font-size: 0.95rem; transition: 0.2s; }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a.nav-pill {
+      background: rgba(56, 189, 248, 0.14); color: var(--accent);
+      padding: 6px 14px; border-radius: 99px; font-weight: 600; font-size: 0.85rem;
+    }
+
+    /* Container */
+    .container { max-width: 1060px; margin: 0 auto; padding: 0 20px; }
+
+    /* Hero */
+    .hero { padding: 68px 0 52px; }
+    .badge {
+      display: inline-block; background: rgba(56, 189, 248, 0.12); color: var(--accent);
+      padding: 6px 14px; border-radius: 99px; font-size: 0.85rem; font-weight: 600; margin-bottom: 16px;
+    }
+    .hero h1 { font-size: 2.5rem; line-height: 1.2; margin-bottom: 14px; }
+    .hero p { color: var(--muted); font-size: 1.08rem; max-width: 640px; margin-bottom: 28px; }
+    .hero-btns { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn {
+      display: inline-block; background: var(--accent); color: #0f172a;
+      padding: 11px 22px; border-radius: 8px; font-weight: 700; transition: 0.2s;
+    }
+    .btn:hover { background: var(--accent-hover); color: #fff; }
+    .btn-outline {
+      display: inline-block; background: transparent; color: var(--text);
+      border: 1px solid #374151; padding: 11px 22px; border-radius: 8px; font-weight: 600; transition: 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Section */
+    section { padding: 44px 0; border-top: 1px solid var(--border); }
+    h2 { font-size: 1.45rem; margin-bottom: 8px; color: #fff; }
+    .sec-desc { color: var(--muted); font-size: 0.95rem; margin-bottom: 22px; }
+
+    /* Grid Cards */
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; }
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px; transition: 0.2s;
+    }
+    .card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .card h3 { font-size: 1.05rem; margin-bottom: 8px; color: #fff; }
+    .card p { color: var(--muted); font-size: 0.9rem; }
+    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .tag {
+      background: #1f2937; color: #d1d5db; font-size: 0.75rem;
+      padding: 4px 10px; border-radius: 6px;
+    }
+
+    /* Lab Maya Simulator */
+    .lab-grid { display: grid; grid-template-columns: 1.1fr 1fr 1.1fr; gap: 16px; }
+    @media (max-width: 920px) { .lab-grid { grid-template-columns: 1fr; } }
+    .lab-panel {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+    }
+    .lab-panel h3 {
+      font-size: 0.98rem; margin-bottom: 12px; padding-bottom: 8px;
+      border-bottom: 1px solid var(--border); color: #f8fafc;
+    }
+    .terminal {
+      background: #020617; color: var(--green); font-family: monospace;
+      padding: 12px; border-radius: 8px; height: 250px; overflow-y: auto;
+      font-size: 0.83rem; line-height: 1.5; border: 1px solid #1e293b;
+    }
+    .input-row { display: flex; gap: 8px; margin-top: 10px; }
+    .input-row input {
+      flex: 1; background: var(--card-inner); border: 1px solid #334155;
+      color: #fff; padding: 8px 10px; border-radius: 6px; font-family: monospace; font-size: 0.85rem;
+    }
+    .input-row button {
+      background: var(--accent); color: #0f172a; border: none;
+      padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 700;
+    }
+    .input-row button:hover { background: var(--accent-hover); color: #fff; }
+    .quick-btns { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .quick-btns button {
+      background: #1f2937; color: #e5e7eb; border: 1px solid #374151;
+      font-size: 0.74rem; padding: 5px 9px; border-radius: 6px; cursor: pointer;
+    }
+    .quick-btns button:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* Topologi 3 Hop */
+    .topology {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: space-between; height: 315px; padding: 6px 0;
+    }
+    .node {
+      background: var(--card-inner); border: 2px solid #334155;
+      padding: 9px 14px; border-radius: 8px; text-align: center;
+      width: 195px; font-size: 0.88rem; transition: 0.3s;
+    }
+    .node.active { border-color: var(--green); box-shadow: 0 0 12px rgba(34, 197, 94, 0.45); }
+    .node.error { border-color: var(--red); box-shadow: 0 0 12px rgba(239, 68, 68, 0.45); }
+    .line { width: 3px; height: 20px; background: #334155; transition: 0.3s; }
+    .line.active { background: var(--green); }
+    .line.error { background: var(--red); }
+
+    /* Log ICMP */
+    .log-box {
+      background: var(--card-inner); border-radius: 8px; padding: 12px;
+      height: 315px; overflow-y: auto; font-size: 0.83rem; border: 1px solid #1e293b;
+    }
+    .log-item {
+      padding: 8px 10px; border-left: 3px solid var(--accent);
+      background: var(--card); margin-bottom: 8px; border-radius: 4px;
+    }
+    .log-item.timeout { border-left-color: var(--red); }
+
+    /* Footer */
+    footer {
+      text-align: center; padding: 36px 20px; color: var(--muted);
+      font-size: 0.9rem; border-top: 1px solid var(--border); margin-top: 32px;
+    }
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 1.95rem; }
+      .nav-links a:not(.nav-pill) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <div class="logo">andiel<span>.dev</span></div>
+      <div class="nav-links">
+        <a href="#tentang">Tentang</a>
+        <a href="#keahlian">Keahlian</a>
+        <a href="#proyek">Proyek</a>
+        <a href="#lab-maya" class="nav-pill">Lab Maya TKJ</a>
+        <a href="#kontak">Kontak</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <!-- Hero -->
+    <div class="hero" id="tentang">
+      <span class="badge">Teknik Komputer &amp; Jaringan — SMKN 2 Lamongan</span>
+      <h1>Halo, aku Arifani Andi Pratama 👋</h1>
+      <p>
+        Biasa dipanggil <strong>Andiel</strong>. Fokus mendalami administrasi jaringan komputer,
+        pengelolaan server Linux, serta pengembangan aplikasi backend dan simulasi jaringan berbasis web.
+      </p>
+      <div class="hero-btns">
+        <a href="#lab-maya" class="btn">Coba Lab Maya TKJ</a>
+        <a href="https://github.com/andielvrep01" target="_blank" class="btn-outline">Profil GitHub</a>
+      </div>
+    </div>
+
+    <!-- Keahlian -->
+    <section id="keahlian">
+      <h2>Keahlian Utama</h2>
+      <p class="sec-desc">Bidang teknis yang dipelajari dan dikembangkan selama di jurusan TKJ.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>🌐 Jaringan &amp; Infrastruktur</h3>
+          <p>Konfigurasi jaringan lokal, routing dasar, diagnostik konektivitas ICMP (Ping &amp; Traceroute), serta manajemen server Ubuntu VPS.</p>
+          <div class="tags">
+            <span class="tag">Networking</span>
+            <span class="tag">Ubuntu Linux</span>
+            <span class="tag">Nginx</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>⚙️ Backend &amp; Database</h3>
+          <p>Membangun layanan API dan bot otomatis yang stabil di server menggunakan manajemen proses modern.</p>
+          <div class="tags">
+            <span class="tag">Node.js</span>
+            <span class="tag">TypeScript</span>
+            <span class="tag">SQLite</span>
+            <span class="tag">PM2</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>💻 Web &amp; Version Control</h3>
+          <p>Pembuatan antarmuka web interaktif serta pengelolaan kode sumber terstruktur menggunakan Git dan GitHub Pages.</p>
+          <div class="tags">
+            <span class="tag">HTML5</span>
+            <span class="tag">CSS3</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">GitHub</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Proyek -->
+    <section id="proyek">
+      <h2>Proyek Pilihan</h2>
+      <p class="sec-desc">Beberapa karya perangkat lunak dan alat praktikum yang telah dibuat.</p>
+      <div class="grid">
+        <div class="card">
+          <h3>Lab Maya: Simulasi CLI Ping &amp; Traceroute</h3>
+          <p>Aplikasi praktikum diagnostik jaringan berbasis web dengan terminal CLI, animasi topologi 3-hop, dan log respon ICMP real-time.</p>
+          <div class="tags">
+            <span class="tag">HTML/JS</span>
+            <span class="tag">TKJ Lab</span>
+            <span class="tag"><a href="#lab-maya">Jalankan di bawah ↓</a></span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>WhatsApp Cloud Bot</h3>
+          <p>Layanan bot otomatis berbasis Node.js, TypeScript, dan SQLite yang di-deploy pada server Ubuntu dengan Nginx reverse proxy.</p>
+          <div class="tags">
+            <span class="tag">TypeScript</span>
+            <span class="tag">Node.js</span>
+            <span class="tag">VPS</span>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Portofolio Digital Andiel</h3>
+          <p>Website portofolio pribadi yang di-hosting langsung melalui GitHub Pages sebagai dokumentasi profil dan karya siswa TKJ.</p>
+          <div class="tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">GitHub Pages</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lab Maya TKJ Terintegrasi -->
+    <section id="lab-maya">
+      <h2>🧪 Lab Maya TKJ: Simulasi CLI Ping &amp; Packet Traceroute</h2>
+      <p class="sec-desc">Praktikum Diagnostik Konektivitas ICMP &amp; Analisis Hop Router — ketik perintah di terminal atau klik tombol cepat di bawah.</p>
+
+      <div class="lab-grid">
+        <!-- Panel Kiri: Terminal -->
+        <div class="lab-panel">
+          <h3>1. Terminal CLI</h3>
+          <div class="terminal" id="terminal">
+            Microsoft Windows [TKJ-CLI v1.0]<br>
+            Ketik: <b>ping 192.168.10.100</b> atau <b>tracert 192.168.10.100</b><br>
+            Gunakan IP <b>192.168.10.200</b> untuk simulasi Request Timed Out.<br><br>
+          </div>
+          <div class="input-row">
+            <input type="text" id="cmdInput" placeholder="Ketik ping atau tracert..." onkeydown="if(event.key==='Enter') runCmd()" />
+            <button onclick="runCmd()">Kirim</button>
+          </div>
+          <div class="quick-btns">
+            <button onclick="setCmd('ping 192.168.10.100')">ping 192.168.10.100</button>
+            <button onclick="setCmd('tracert 192.168.10.100')">tracert 192.168.10.100</button>
+            <button onclick="setCmd('ping 192.168.10.200')">ping (RTO)</button>
+            <button onclick="clearAll()">cls</button>
+          </div>
+        </div>
+
+        <!-- Panel Tengah: Topologi 3 Hop -->
+        <div class="lab-panel">
+          <h3>2. Visualisasi Topologi 3-Hop</h3>
+          <div class="topology">
+            <div class="node" id="n0">💻 <b>PC Client</b><br><small>192.168.10.2</small></div>
+            <div class="line" id="l1"></div>
+            <div class="node" id="n1">🔀 <b>Hop 1: Switch</b><br><small>192.168.10.1</small></div>
+            <div class="line" id="l2"></div>
+            <div class="node" id="n2">🌐 <b>Hop 2: Router</b><br><small>10.10.10.1</small></div>
+            <div class="line" id="l3"></div>
+            <div class="node" id="n3">🖥️ <b>Hop 3: Server</b><br><small>192.168.10.100</small></div>
+          </div>
+        </div>
+
+        <!-- Panel Kanan: Log Respon ICMP -->
+        <div class="lab-panel">
+          <h3>3. Log Respon ICMP &amp; Status</h3>
+          <div class="log-box" id="logBox">
+            <div style="color:#64748b;">Menunggu paket dikirim dari terminal...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kontak -->
+    <section id="kontak">
+      <h2>Kontak &amp; Tautan</h2>
+      <div class="card">
+        <p style="margin-bottom: 10px;">Tertarik berdiskusi seputar jaringan komputer, server Linux, atau pengembangan web? Terhubung melalui tautan berikut:</p>
+        <p><strong>GitHub:</strong> <a href="https://github.com/andielvrep01" target="_blank">github.com/andielvrep01</a></p>
+        <p><strong>Website:</strong> <a href="https://andielvrep01.github.io/" target="_blank">andielvrep01.github.io</a></p>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    &copy; 2026 Arifani Andi Pratama (Andiel) &bull; SMKN 2 Lamongan
+  </footer>
+
+  <script>
+    const term = document.getElementById('terminal');
+    const logBox = document.getElementById('logBox');
+    const input = document.getElementById('cmdInput');
+
+    function setCmd(cmd) { input.value = cmd; runCmd(); }
+
+    function clearAll() {
+      term.innerHTML = '';
+      logBox.innerHTML = '<div style="color:#64748b;">Log dibersihkan.</div>';
+      resetNodes();
+    }
+
+    function resetNodes() {
+      for (let i = 0; i <= 3; i++) document.getElementById('n' + i).className = 'node';
+      for (let i = 1; i <= 3; i++) document.getElementById('l' + i).className = 'line';
+    }
+
+    function printTerm(text) {
+      term.innerHTML += text + '<br>';
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function addLog(title, detail, isError = false) {
+      const div = document.createElement('div');
+      div.className = 'log-item' + (isError ? ' timeout' : '');
+      div.innerHTML = `<b>${title}</b><br><small>${detail}</small>`;
+      logBox.prepend(div);
+    }
+
+    async function animatePath(success) {
+      resetNodes();
+      const steps = ['n0', 'l1', 'n1', 'l2', 'n2', 'l3', 'n3'];
+      for (let i = 0; i < steps.length; i++) {
+        await new Promise(r => setTimeout(r, 240));
+        const el = document.getElementById(steps[i]);
+        if (!success && i >= 5) {
+          el.classList.add('error');
+        } else {
+          el.classList.add('active');
+        }
+      }
+    }
+
+    async function runCmd() {
+      const raw = input.value.trim();
+      if (!raw) return;
+      input.value = '';
+      printTerm(`<span style="color:#38bdf8">C:\\Siswa-TKJ&gt;</span> ${raw}`);
+
+      const parts = raw.toLowerCase().split(/\s+/);
+      const cmd = parts[0];
+      const ip = parts[1];
+
+      if (cmd === 'cls') { clearAll(); return; }
+
+      if ((cmd === 'ping' || cmd === 'tracert') && ip) {
+        const isReachable = (ip === '192.168.10.100');
+        await animatePath(isReachable);
+
+        if (cmd === 'ping') {
+          printTerm(`Pinging ${ip} with 32 bytes of data:`);
+          for (let i = 1; i <= 4; i++) {
+            await new Promise(r => setTimeout(r, 380));
+            if (isReachable) {
+              const rtt = Math.floor(Math.random() * 15) + 4;
+              printTerm(`Reply from ${ip}: bytes=32 time=${rtt}ms TTL=64`);
+              addLog(`ICMP Echo Reply #${i}`, `Tujuan: ${ip} | RTT: ${rtt}ms | TTL: 64 (Sukses)`);
+            } else {
+              printTerm(`Request timed out.`);
+              addLog(`ICMP Timeout #${i}`, `Tujuan: ${ip} tidak merespon (Packet Loss)`, true);
+            }
+          }
+        } else if (cmd === 'tracert') {
+          printTerm(`Tracing route to ${ip} over a maximum of 30 hops:`);
+          const hops = [
+            { num: 1, ip: '192.168.10.1', name: 'Switch-Lokal', ms: '2 ms' },
+            { num: 2, ip: '10.10.10.1', name: 'Router-Gateway', ms: '8 ms' },
+            { num: 3, ip: ip, name: isReachable ? 'Server-Tujuan' : 'Request timed out.', ms: isReachable ? '14 ms' : '*' }
+          ];
+          for (const h of hops) {
+            await new Promise(r => setTimeout(r, 480));
+            if (!isReachable && h.num === 3) {
+              printTerm(`  ${h.num}    *        *        *     Request timed out.`);
+              addLog(`Hop ${h.num} Gagal`, `Paket terhenti setelah Router Gateway`, true);
+            } else {
+              printTerm(`  ${h.num}    ${h.ms}     ${h.ms}     ${h.ms}   ${h.name} [${h.ip}]`);
+              addLog(`Hop ${h.num} Tercapai`, `${h.name} (${h.ip}) - Waktu: ${h.ms}`);
+            }
+          }
+        }
+      } else {
+        printTerm(`Perintah tidak dikenali. Gunakan: ping [ip] atau tracert [ip]`);
+      }
+    }
+  </script>
+</body>
+</html>
